@@ -64,29 +64,20 @@ angular.module("json-hierarchy-viewer", ['ui.codemirror']).directive('collection
 
 			scope.getElementHierarchy = function (element) {
 				let hierarchy = "";
+				let clone = (typeof element.member.value == "object" ? "" : element.member.value.toString());
 
 				while (element != null) {
 					if (element.member) {
-						if (!isNaN(element.member.name)) {
+						if (!isNaN(element.member.name))
 							hierarchy = "[" + element.member.name + "]" + " > " + hierarchy;
-							element = scope.getKey(element);
-							hierarchy = element.member.name + hierarchy;
-						}
 						else
 							hierarchy = element.member.name + " > " + hierarchy;
 					}
 					element = element.$parent;
 				}
-				return hierarchy.substr(0, hierarchy.length - 3);
+				return hierarchy.substr(0, hierarchy.length - 3) + (clone.length > 0 ? " > " + clone : "");
 			}
 
-			scope.getKey = function (element) {
-				while (element != null) {
-					if (element.member && isNaN(element.member.name))
-						return element;
-					element = element.$parent;
-				}
-			}
 			scope.show = true;
 			scope.toggleShow = function () {
 				element.find("i").toggleClass("fa-plus-square");
